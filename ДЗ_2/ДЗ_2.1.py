@@ -6,7 +6,7 @@ with open("input.txt", "r") as f:
         for j in range(len(a[i])):
             a1 += [list(a[i][j])]
 b = sorted(a1, key=lambda x: -len(x))
-c = []
+c = ''
 for i in range(len(b[0])):
     k = 0
     for j in range(len(b)):
