@@ -4,10 +4,12 @@ with open("input.txt", "r") as f:
 b = len(a)
 x = []
 for i in range(len(a)):
-     x += [[i % b, a[i][0]]]
+     x += [[i % b, a[i]]]
 x1 = sorted(x, key = lambda i: -i[0] )
 k = ''
 for i in range(len(x1)):
-    k += str(x1[i][0]) + ' ' + str(x1[i][1]) + "\n"
+    for j in range(len(x1[i][1])):
+        k += str(x1[i][1][j]) + ' '
+    k += "\n"
 with open("output.txt", "w") as f:
     f.writelines(k)
