@@ -268,5 +268,5 @@ while running:
         if event.type == pg.QUIT:
             running = False
 
-
+print("Вы расстреляли ", score, " врагов народа")
 pg.quit()
