@@ -12,7 +12,7 @@ WIDTH, HEIGHT = 500, 500
 FONE_COLOR = (155, 155, 155)
 FPS = 30
 pg.init()
-pygame.display.set_caption("Сталинские репрессииа")
+pygame.display.set_caption("Сталинские репрессии")
 
 f_score = pg.font.Font(None, 36)
 f_good_click1 = pg.font.Font(None, 30)
