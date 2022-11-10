@@ -1,3 +1,7 @@
+#Правила: расстреливай антисоветские элементы, нажимая на F, нажми на F и SPACE, чтобы устроить массовые репрессии
+#Чтобы двигаться, нажимай на кнопки RIGHT, LEFT, UP, DOWN
+#Ecли запятнаешься связями с антисоветскими элементами, проиграешь
+
 import math
 import pygame as pg
 from random import randint
@@ -8,7 +12,7 @@ WIDTH, HEIGHT = 500, 500
 FONE_COLOR = (155, 155, 155)
 FPS = 30
 pg.init()
-pygame.display.set_caption("_First_ Ball game")
+pygame.display.set_caption("Сталинские репрессииа")
 
 f_score = pg.font.Font(None, 36)
 f_good_click1 = pg.font.Font(None, 30)
@@ -135,7 +139,7 @@ class snaryad:
         self.color = color
         self.facing = facing
         self.vel = facing
-    def drow(self, screen):
+    def draw(self, screen):
         pygame.draw.circle(screen, self.color, (self.x + 25, self.y + 25), self.radius)
 
     def hit(self, obj):
@@ -186,14 +190,14 @@ def render(screen):
     keys = pygame.key.get_pressed()
     textScore = f_score.render("Расстреляно: " + str(score), True, (200, 0, 0))
     if keys[pygame.K_f]:
-        pygame.time.delay(10)
+
         if napravlenie == "right":
             facing = 1
         elif napravlenie == "left":
             facing = -1
         bullets.append(snaryad(round(x), round(y), 5, 'red', facing))
     for bullet in bullets:
-        bullet.drow(screen)
+        bullet.draw(screen)
     for ball in balls:
         ball.render(screen)
 
@@ -240,17 +244,25 @@ while running:
         if keys[pygame.K_SPACE] and y > 50:
             isJump = True
     else:
-        pygame.time.delay(5)
+
         if Jump >= 0:
+            pygame.time.delay(10)
             y -= (Jump ** 2)
             Jump -= 1
         elif 0 > Jump >= -7:
+            pygame.time.delay(10)
             y += (Jump ** 2)
             Jump -= 1
         else:
             isJump = False
             Jump = 7
-
+    for ball in balls:
+        if ((x - ball.x) ** 2 + (y - ball.y) ** 2 <= (ball.radius) ** 2) or (
+                (x + 50 - ball.x) ** 2 + (y - ball.y) ** 2 <= (ball.radius) ** 2):
+            running = False
+        elif ((x - ball.x)**2 + (y + 50 - ball.y)**2 <= (ball.radius)**2) or (
+                (x + 50 - ball.x) ** 2 + (y + 50 - ball.y) ** 2) <= (ball.radius) ** 2:
+            running = False
     update()
     for event in pg.event.get():
         if event.type == pg.QUIT:
