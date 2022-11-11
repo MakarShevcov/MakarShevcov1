@@ -262,7 +262,7 @@ while running:
             running = False
         elif ((x - ball.x)**2 + (y + 50 - ball.y)**2 <= (ball.radius)**2) or (
                 (x + 50 - ball.x) ** 2 + (y + 50 - ball.y) ** 2) <= (ball.radius) ** 2:
-            continue
+            running = False
     update()
     for event in pg.event.get():
         if event.type == pg.QUIT:
