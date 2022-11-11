@@ -262,11 +262,31 @@ while running:
             running = False
         elif ((x - ball.x)**2 + (y + 50 - ball.y)**2 <= (ball.radius)**2) or (
                 (x + 50 - ball.x) ** 2 + (y + 50 - ball.y) ** 2) <= (ball.radius) ** 2:
-            running = False
+            continue
     update()
     for event in pg.event.get():
         if event.type == pg.QUIT:
             running = False
 
 print("Вы расстреляли ", score, " врагов народа")
+final = True
+while final:
+    for event in pg.event.get():
+        if event.type == pg.QUIT:
+            final = False
+    screen.blit(pygame.image.load('StalinDeath.jpg'), (0, 0))
+    f1 = pygame.font.Font(None, 40)
+    f2 = pygame.font.Font(None, 60)
+    text1 = f1.render("Вы расстреляли ", True,
+                      (255, 0, 0))
+    score1 = str(score)
+    text2 = f2.render(score1, True,
+                      (255, 0, 0))
+    text3 = f1.render("врагов народа ", True,
+                      (255, 0, 0))
+    screen.blit(text1, (130, 50))
+    screen.blit(text2, (220, 80))
+    screen.blit(text3, (140, 110))
+    pygame.display.update()
+
 pg.quit()
