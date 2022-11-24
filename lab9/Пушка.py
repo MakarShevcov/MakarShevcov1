@@ -49,7 +49,7 @@ class Ball:
         """
         # FIXME
         if self.y < HEIGHT - self.r:
-            self.vy -= 10/FPS
+            self.vy -= 30/FPS
         self.x += self.vx
         self.y -= self.vy
         if self.x < self.r:
@@ -87,7 +87,7 @@ class Ball:
 class Gun:
     def __init__(self, screen):
         self.screen = screen
-        self.f2_power = 10
+        self.f2_power = 1
         self.f2_on = 0
         self.an = 1
         self.color = GREY
