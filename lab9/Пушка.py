@@ -192,6 +192,7 @@ class Target:
 
 pygame.init()
 screen = pygame.display.set_mode((WIDTH, HEIGHT))
+level = pygame.image.load('post-29-1325673135.jpg')
 bullet = 0
 score = 0
 balls = []
@@ -204,15 +205,15 @@ target2 = Target()
 finished = False
 tg = [target1, target2]
 while not finished:
-    screen.blit(pygame.image.load('post-29-1325673135.jpg'), (0, 0))
+    screen.blit(level, (0, 0))
     screen.blit(f_score.render("Счёт: " + str(score), True, (200, 0, 0)), (0,0))
-    gun.draw(A, B)
 
     for target in tg:
         target.draw()
         target.go(FPS)
     for b in balls:
         b.draw()
+    gun.draw(A, B)
     pygame.display.update()
     clock.tick(FPS)
     for event in pygame.event.get():
@@ -248,4 +249,6 @@ while not finished:
         x -= 10
 
     gun.power_up()
+    if score >= 100:
+        level = pygame.image.load('priroda-reki-ozera-ozero-les-gora-oblaka-1593258.jpg')
 pygame.quit()
