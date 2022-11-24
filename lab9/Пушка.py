@@ -2,7 +2,9 @@ import math
 from random import choice
 from random import randint
 import pygame
-
+import pygame.display
+pygame.init()
+f_score = pygame.font.Font(None, 36)
 FPS = 60
 pygame.display.set_caption("Пушка")
 RED = 0xFF0000
@@ -15,13 +17,14 @@ BLACK = (0, 0, 0)
 WHITE = 0xFFFFFF
 GREY = 0x7D7D7D
 GAME_COLORS = [RED, BLUE, YELLOW, GREEN, MAGENTA, CYAN]
-
 WIDTH = 800
 HEIGHT = 600
-
-
+A = 50
+B = HEIGHT - 80
+x = 60
+y = HEIGHT - 30
 class Ball:
-    def __init__(self, screen: pygame.Surface, x=15, y = HEIGHT-80):
+    def __init__(self, screen: pygame.Surface):
         """ Конструктор класса ball
 
         Args:
@@ -29,8 +32,8 @@ class Ball:
         y - начальное положение мяча по вертикали
         """
         self.screen = screen
-        self.x = x
-        self.y = y
+        self.x = x + A
+        self.y = B
         self.r = 10
         self.vx = 0
         self.vy = 0
@@ -45,19 +48,19 @@ class Ball:
         и стен по краям окна (размер окна 800х600).
         """
         # FIXME
-        if self.y <= HEIGHT - self.r:
+        if self.y < HEIGHT - self.r:
             self.vy -= 10/FPS
         self.x += self.vx
         self.y -= self.vy
-        if self.x <= self.r:
+        if self.x < self.r:
             self.vx *= -1
-        if self.x >= WIDTH - self.r:
+        if self.x > WIDTH - self.r:
             self.vx *= -1
         if self.y > HEIGHT - self.r:
             self.y = HEIGHT - self.r
             self.vy *= -0.8
-            self.vx *= 0.99
-        if self.y <= self.r +5:
+            self.vx *= 0.9
+        if self.y < self.r:
             self.vy *= -1
 
 
@@ -119,7 +122,12 @@ class Gun:
             self.color = GREY
 
     def draw(self, A, B):
-        pygame.draw.line(screen, GREY, (0, HEIGHT - 80), (A, B), 20)
+        pygame.draw.line(screen, GREY, (x, y), (x + A, B), 20)
+        pygame.draw.circle(screen, (100, 100, 100), (x-10, y), 20)
+        pygame.draw.ellipse(screen, GREY, (x - 60, y, 100, 40))
+        pygame.draw.circle(screen, BLACK, (x - 40, y + 20), 10)
+        pygame.draw.circle(screen, BLACK, (x - 10, y + 20), 10)
+        pygame.draw.circle(screen, BLACK, (x + 20, y + 20), 10)
 
     def power_up(self):
         if self.f2_on:
@@ -137,7 +145,6 @@ class Target:
         self.y = randint(300, 550)
         self.r = randint(30, 50)
         self.color = choice(GAME_COLORS)
-        self.points = 0
         self.live = 1
         self.speed_max = speed_max
         self.type = type
@@ -176,9 +183,6 @@ class Target:
             k = -1
         self.speed_y =  k * self.speed_max * (math.cos(self.timeCreate/500))**2
 
-    def hit(self, points=1):
-        """Попадание шарика в цель."""
-        self.points += points
 
     def draw(self):
         pygame.draw.circle(screen, self.color, (self.x, self.y), self.r)
@@ -189,20 +193,21 @@ class Target:
 pygame.init()
 screen = pygame.display.set_mode((WIDTH, HEIGHT))
 bullet = 0
+score = 0
 balls = []
 lastCreate = 0
-delayCreate = 0
+delayCreate = 10000
 clock = pygame.time.Clock()
 gun = Gun(screen)
 target1 = Target()
 target2 = Target()
 finished = False
 tg = [target1, target2]
-A = 50
-B = HEIGHT - 80
 while not finished:
-    screen.blit(pygame.image.load('priroda-reki-ozera-ozero-les-gora-oblaka-1593258.jpg'), (0, 0))
+    screen.blit(pygame.image.load('post-29-1325673135.jpg'), (0, 0))
+    screen.blit(f_score.render("Счёт: " + str(score), True, (200, 0, 0)), (0,0))
     gun.draw(A, B)
+
     for target in tg:
         target.draw()
         target.go(FPS)
@@ -215,8 +220,12 @@ while not finished:
             finished = True
         elif event.type == pygame.MOUSEBUTTONDOWN:
             gun.fire2_start(event)
-            A = 50* math.cos(math.atan((event.pos[1]-450) / (event.pos[0])))
-            B = HEIGHT - 80 + 50 * math.sin(math.atan((event.pos[1]-450) / (event.pos[0])))
+            if event.pos[0] > x:
+                A = 50* math.cos(math.atan((event.pos[1]-450) / (event.pos[0])))
+                B = HEIGHT - 80 + 50 * math.sin(math.atan((event.pos[1]-450) / (event.pos[0])))
+            elif event.pos[0] <= x:
+                A = -50 * math.cos(math.atan((event.pos[1] - 450) / (event.pos[0])))
+                B = HEIGHT - 80 + 50 * math.sin(math.atan((event.pos[1] - 450) / (event.pos[0])))
         elif event.type == pygame.MOUSEBUTTONUP:
             gun.fire2_end(event)
         elif event.type == pygame.MOUSEMOTION:
@@ -226,9 +235,17 @@ while not finished:
         for target in tg:
             if b.hittest(target) and target.live:
                 target.live = 0
-                target.hit()
+                score += 1
                 tg.remove(target)
                 tg.append(Target())
+        if pygame.time.get_ticks() > (lastCreate + delayCreate):
+            lastCreate = pygame.time.get_ticks()
+            balls.remove(b)
+    keys = pygame.key.get_pressed()
+    if keys[pygame.K_RIGHT] and x < 740:
+        x += 10
+    if keys[pygame.K_LEFT] and x > 60:
+        x -= 10
 
     gun.power_up()
 pygame.quit()
